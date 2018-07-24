@@ -1,0 +1,27 @@
+---
+title: "Untitled"
+author: "Nathan Brouwer"
+date: "July 24, 2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+\[
+N_{t+1} = \lambda*N_{t}
+\]
+
+
+\[
+N_{t+1}/N_{t} = \lambda
+\]
+
+\[
+\frac{N_{t+1}N_{t}| = \lambda
+\]
