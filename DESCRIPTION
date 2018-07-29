@@ -1,0 +1,21 @@
+Package: popcycles
+Version: 0.0.0.9000
+Title: popcycles is an education-focused package for the plotting, analaysis and simulation of classic unstructured ecological population models.
+Description: popcycles is a package for the plotting, analaysis and simulation of unstructured ecological population models.  Its main focus is educational;  first, to allow ecology students to understand how classic population models behave when parameters such as instrincis growth rate (r) and carrying capacity (K) are changed, and second to demonstate programming concepts by showing different approaches to how these models can be coded.  The focus of the package is on logistic population models and their extensions, such as such as modifying negative density dependnece dynamics using the theta-logistic model, inclusion of positive density dependence (Allee effects), and inclusion of stochasticity.  Implementations of these models in popcycles relies heavily on Steven's A Primer of Ecology in R, and Morris & Doak's Quantitative Conservation.  The idea for Pablo Escobar's hippos originates with Megan Duffy.
+Authors@R: person("Nathan", "Brouwer", , "brouwern@gmail.com", c("aut", "cre"))
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.0.1
+Imports: 
+    stats,
+    graphics,
+    devtools,
+    ggplot2,
+    cowplot
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

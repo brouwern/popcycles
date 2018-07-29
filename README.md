@@ -1,6 +1,6 @@
 # popcycles
 
-The goal of popcycles is to ...
+popcycles is a package for the plotting, analaysis and simulation of ecological population models.
 
 ## Installation
 
