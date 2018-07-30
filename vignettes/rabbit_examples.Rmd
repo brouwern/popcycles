@@ -1,5 +1,5 @@
 ---
-title: "Rabbit population growth"
+title: "Breeding like rabbits: discrete-time logistic population growth"
 author: "Nathan Brouwer"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-
+This vignette demonstrates logistic population growth using a hypothetical population of rabbits.  Specifically, it uses the discrete-time version of the logistics equation to model rabbit population dynamics, assuming that rabbits breed in a single discrete season each year.  This is a simplification of rabbit life history, since in reality
 
 ## Preliminaries
 ```{r}
