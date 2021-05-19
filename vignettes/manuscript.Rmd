@@ -1,0 +1,32 @@
+---
+title: '[Re] A metapopulation model of the peregrine falcon in California: viability
+  and management strategies'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## Introduction
+
+blah blah blah
+
+### Take 1
+
+Wooten and Bell (199x) built a spatially-structured population model of California Peregrine Falcons.    The model defined two stage classes, pre-breeding and breeding, and northern and southern California subpopulations linked by dispersal.  The model also featured density-dependent recruitment implemented as a fixed population ceiling.  Subsequent authors have built more sophisticated models with additional age/stage classes, additional subpopulations,more flexible density dependence, and the effect of persistent environmental contamination.  
+
+The original Wooten and Bell (199x) was also featured as a case study by Hunter and Caswell (2005) for the demonstation of the use of vec-permutation operations to model spatially structured population dynamics.  Most spatially structured matrix models represent demography and dispersal in a single, complicated matrix.  Vec-permutation operations leverage the logic of periodic matrix models to simplify the representation of 
+
+We first built a reference implementation fo the Wootten and Bell (1992) model using their original matrices and the mechanics described in their paper.  We then extended the vec-permutation version of the model reported in Hunter and Caswell (2005), which had only described the  movement between subpopulations, to encompass density dependence and other features of the original model.
+
+### Take 2
+
+Animal populations are frequently spatially structured, with young organims frequently dispersing away from where they were born (natal dispersal), single populations of migratory organisms using mutliple habitats throughout the year, immigration from source populations sustaining sinks, and species prone to local extinction only remianing stable as a metapopulation.
+
+Spatially structured models have frqeuently focused ...
+
+Wooten and Bell (1992) built a spatially structured demographic matrix model of California Peregrine Falcons.  They referred to the model as a metapopulation model, using the term in the broad-sense to connote the spatial structure of the model.  While its preferable to reserve the term metapopulation to refer to networks of populations with high rates of extinction and colonization, we'll use the term of the originally other's throughout this report.  
+

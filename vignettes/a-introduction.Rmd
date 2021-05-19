@@ -1,0 +1,26 @@
+---
+title: "a) Introduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{a) Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(popcycles)
+```
+
+## A terse overview of periodic matrix model
+
+
+Matrix population models (MPMs) are powerful tools for understanding population dynamics and evolution.  Most MPMs describe population dynamics over an annual time step, which compresses all within-year processes just as mate-finding, reproduction, and disperal into a single step that is agnostic to the order of events.  While in many situations this is a reasonable approximation, in others we may wish to expliclity model a sequence of events.  
+
+Similarly, most MPMs model populations in single time steps, and except for the size and structure of the population each time step is equivalent.  In some populations, however, important conditions have changed between years in a sequence.  For example,  when a tree falls in the forest light levels are intially very high, then steadily decline over the course of several years as nearby trees close the gap.  A series of matrix can represent how demographic rates change steadily from when the gap opens to when it closes, and the order of the matrices is important.

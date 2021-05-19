@@ -1,0 +1,213 @@
+---
+title: "e) Caswell & Trevisan periodic matrix models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{temp}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(popcycles)
+```
+
+
+
+
+```{r}
+### Caswell and Trevisan 1994 Ecology Sensitivity analysis of periodic matrix models
+# toy example
+
+
+###Notation
+# B(h) = individual matrix from the cycle
+# A(i) = all matrices multipled together
+
+#n(t+m) = [B(m)B(m-1)...B(1)]n(t)
+#       =  A(1)n(t)                #subscript on A indicates the phase of cycle
+
+
+
+### Sensivitiy of A
+# "to calc the sensitivity of lambda to change in each element of Bh, 
+# 1st cyclically permute the individual marices until B()h appears 1st in teh series 
+# (ie et the right hand end of the product matrics).  
+# 2nd calcualte the sensitivity matrix S(ha) corresponding to this product 
+# 3rd  premultiply it by the TRANSPOSE of the product of the ind matrices, EXCLUDING B(h)"
+
+
+Bs <- matrix(data = c(2.0, 0.5,
+                      0.5, 0.5),
+             byrow = TRUE,
+             nrow = 2)
+
+Bw <- matrix(data = c(0.2, 5.0,
+                      0.5, 0.5),
+             byrow = TRUE,
+             nrow = 2)
+
+
+
+#for Bs
+As <- Bw%*%Bs
+Ssa <- calc.S.et.e(As)$S
+B.term <- t(Bw)
+
+B.term%*%Ssa
+
+#         [,1]      [,2]
+# [1,] 0.455553 0.1691925
+# [2,] 4.185413 1.5544638
+
+#for Bw
+Aw <- Bs%*%Bw
+Swa <- calc.S.et.e(Ah)$S
+B.term <- t(Bs)
+
+B.term%*%Sha
+
+### Swb
+#      [,1]      [,2]
+# [1,] 1.698408 0.5328262
+# [2,] 1.312041 0.4116150
+
+
+
+### one liner
+Ss <- round(t(Bw)%*%calc.S.et.e(Bw%*%Bs)$S,2)
+
+
+Sw <- round(t(Bs)%*%calc.S.et.e(Bs%*%Bw)$S,2)
+
+
+
+
+## McFadden 1991 Alcyonium data
+#A COMPARATIVE DEMOGRAPHIC ANALYSIS OF CLONAL REPRODUCTION IN A TEMPERATE SOFT CORAL
+
+#Caswell looks at population T1
+#Data in McFadden table 2
+
+# for the "winter" period there are 2 matrices, which she average
+#"I first averaged those transition probabilities that were measured for the 
+#same period in different years at a site to determine a mean transition matrix 
+#for that period (e.g., for May-August at sites B1 and B2 and September-May at 
+#sites T1 and T2). I then computed the product of the transition matrices for the 
+#two dif-ferent periods at each site. For this calculation, 4- and 8-mo periods 
+#were treated as equal (e.g., 6-mo) lengths"
+
+#Winter 1:September 1985-May 1986
+Bw1 <- matrix(
+data = 
+c(0,      0,	  0,	  0,  	0,
+  0.007,	0.13,	0.12,	0.04,	0.1,
+  0,	    0.26,	0.37,	0.2,	0.1,
+  0,	    0.17,	0.35,	0.47,	0.24,
+  0,	   0.17,	0.09,	0.29,	0.76),
+byrow = TRUE,nrow =5
+)
+
+
+#Summer
+Bs <- matrix(
+  data = 
+    c(0,   0,	    0.22,	  0.45,	4.09,
+      0,	 0.58,	0.18,	  0.13,	0.05,
+      0,	 0.17,	0.76,	  0.34,	0.21,
+      0,	 0,	    0,	    0.47,	0.36,
+      0,	 0,	    0,	    0.03,	0.43),
+      byrow = TRUE,nrow =5
+    )
+
+
+#Winter 2
+Bw2 <- matrix(
+  data = 
+    c(0,      0,	   0,	  0,    0,
+      0.007,	0.3,	0.14,	0.16,	0,
+      0,	    0.13,	0.21,	0.28,	0.06,
+      0,	    0.17,	0.31,	0.23,	0.17,
+      0,	    0.09,	0.18,	0.52,	0.87),
+byrow = TRUE,nrow =5
+)
+
+
+#average winter matrix
+Bw <- (Bw1+Bw2)/2
+
+
+#multiple matrices
+Aw <- Bs%*%Bw
+
+
+
+#McFadden reports her S in Table 6
+#caswell reproduces
+round(calc.S.et.e(Aw)$e*100,0)
+
+#(this is equation 10 in Caswell)
+# [1,]    0    0    0    0    0
+# [2,]    0    2    5    3    1
+# [3,]    0    5   14   10    4
+# [4,]    0    3   10   11    8
+# [5,]    0    2    4    8    9
+
+#Elast by hand
+round((Aw/calc.lam(Aw))*calc.S.et.e(Aw)$S*100,0)
+
+
+
+
+#Sensitivities as per caswel and Trevisan 1994 Ecology
+
+#Winter 
+Aw <- Bs%*%Bw            
+Sha <- calc.S.et.e(Aw)$S
+B.term <- t(Bs)
+Swa <-B.term%*%Sha
+
+Lw <- calc.lam(Aw)
+
+#Calculate elasticity
+e.w <- round((Bw/Lw)*Swa*100,0)  #NOTE: the least is calcualted using the component matrix b, not final matrix A!!!
+
+# e = matrix of interest / overall lambda * Special periodic sensitivity
+# where overall lambda is NOT lambda fo the matrix of interest but of all of them mult together
+
+#check: should sum to ~100
+sum(round((Bw/Lw)*Swa*100,0) )
+
+1+3+3+3+14+7+15
+0+2+9+10+18
+
+
+
+#Summer 
+As <- Bw%*%Bs
+Sha <- calc.S.et.e(As)$S
+b.term <- t(Bw)
+Ssa <-b.term%*%Sha
+
+Ls <- calc.lam(As)
+
+#Calculate elasticity
+e.s <- round((Bs/Ls)*Ssa*100,0)  #NOTE: the elast is calculated using the 
+                                 #      component matrix b, 
+                                 #      not final matrix A!!!
+
+#check: should sum to ~100
+sum(e.s,0)
+
+apply(e.s,2,sum)
+
+
+
+```
+

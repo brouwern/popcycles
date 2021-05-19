@@ -1,0 +1,103 @@
+---
+title: "g) Caswell book"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{g) Caswell book}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(popcycles)
+```
+
+
+
+
+```{r}
+
+
+
+#Caswell chapter 13 Periodic Matrix Models
+#13.2.1 Period matrix models for annuals
+#Example 13.4 A model for winter annual plants
+#From Watkinson 1981
+
+
+#### Subcomponent matrices
+b11 <- 0.3
+b21 <- 0.1
+b22 <- 0.6
+b32 <- 0.2
+Bm <- matrix(data = c(b11, 0.0,
+                     b21, b22,
+                     0.0, b32), byrow = TRUE,nrow = 3)
+
+c11 <- 1
+c12 <- 10
+c13 <- 100
+Cm <- c(c11, c12, c13)
+
+d11 <- d21 <- 0.5
+Dm <- matrix(data = c(d11,
+                     d21), nrow = 2)
+
+f11 <- 0.05
+f22 <- 0.1
+Fm <- matrix(data = c(f11, 0.0,
+                     0.0,  f22), byrow = TRUE, nrow = 2)
+
+#multiply all subcomponents
+Fm%*%Dm%*%Cm%*%Bm
+
+
+#Build a full matrix
+mfull <-matrix(
+c(0  ,0  ,0  ,0  ,0  ,0  ,f11,0  ,
+  0  ,0  ,0  ,0  ,0  ,0  ,0  ,f22,
+  b11,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+  b21,b22,0  ,0  ,0  ,0  ,0  ,0  ,
+  0  ,b32,0  ,0  ,0  ,0  ,0  ,0  ,
+  0  ,0  ,c11,c12,c13,0  ,0  ,0  ,
+  0  ,0  ,0  ,0  ,0  ,d11,0  ,0  ,
+  0  ,0  ,0  ,0  ,0  ,d21,0  ,0
+   ), byrow = TRUE, nrow = 8)
+
+
+#build design matrices
+MB <-matrix(
+  c(0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    1  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    1  ,1  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,1  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,0  ,0  ,0  ,0  ,0  ,0  ,0
+  ), byrow = TRUE, nrow = 8)
+
+MC <-matrix(
+  c(0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,0  ,1  ,1  ,1  ,0  ,0  ,0  ,
+    0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,
+    0  ,0  ,0  ,0  ,0  ,0  ,0  ,0
+  ), byrow = TRUE, nrow = 8)
+
+
+#compare submatrices to full matrix*design matrix
+Cm%*%Bm
+(mfull*MC)%*%(mfull*MB)
+
+```
+
