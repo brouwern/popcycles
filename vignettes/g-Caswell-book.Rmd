@@ -1,8 +1,8 @@
 ---
-title: "g) Caswell book"
+title: "d) Notes from Caswell's book chapter on periodic models"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{g) Caswell book}
+  %\VignetteIndexEntry{d) Notes from Caswell's book chapter on periodic models}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,6 +18,9 @@ knitr::opts_chunk$set(
 library(popcycles)
 ```
 
+## Introduction
+
+Not yet updated.  Probably doesn't make much sense without the text from the books.
 
 
 

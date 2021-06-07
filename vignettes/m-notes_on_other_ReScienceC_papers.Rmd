@@ -1,7 +1,23 @@
 ---
-title: "Example intro"
-output: html_document
+title: "m) Notes on other papers from ReScience-C"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{m) Notes on other papers from ReScience-C}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(popcycles)
+```
+
 
 ## Example paper: [Re] Chaos in a Three-Species Food Chain
 

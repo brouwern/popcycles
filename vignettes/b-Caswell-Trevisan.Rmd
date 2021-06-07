@@ -1,8 +1,8 @@
 ---
-title: "e) Caswell & Trevisan periodic matrix models"
+title: "b) Replication: Caswell & Trevisan periodic matrix models NOT UPDATED"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{temp}
+  %\VignetteIndexEntry{e) Replication: Caswell & Trevisan periodic matrix models NOT UPDATED}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 
@@ -18,7 +19,9 @@ knitr::opts_chunk$set(
 library(popcycles)
 ```
 
+## Introduction
 
+Code to implement Caswell & Trevisan periodic matrix models.  Code is not yet updated; function calls need to be updated and checked (e.g., functions to calc sensitivity) 
 
 
 ```{r}

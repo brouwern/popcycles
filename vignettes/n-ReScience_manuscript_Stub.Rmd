@@ -1,13 +1,25 @@
 ---
-title: '[Re] A metapopulation model of the peregrine falcon in California: viability
-  and management strategies'
-output: html_document
+title: "n) [Re] A metapopulation model of the peregrine falcon in California: viability and management strategies"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{n) [Re] A metapopulation model of the peregrine falcon in California: viability and management strategies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
 ```
 
+```{r setup}
+library(popcycles)
+```
+
+Just intial notes for introduction to replicaiton report
 
 
 ## Introduction
