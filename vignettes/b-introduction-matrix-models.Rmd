@@ -1,0 +1,89 @@
+---
+title: "b) A brief introduction to matrix models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{b) A brief introduction to matrix models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(popcycles)
+```
+
+
+An excellent introduction to matrix population models can be found here:
+
+Stevens, H.  2020.  A primer of ecology in R
+Chapter 4 Density-independent Demography
+Sections 4.1 to 4.6
+https://hankstevens.github.io/Primer-of-Ecology/DID.html
+
+Key concepts:
+
+* life cycle graph
+* matrices and matrix math
+* life stages
+* matrix representation of life cycles
+* population projection
+* population growth rate
+* population growth rate from eigenanalysis
+* sensitivity and elasticity analysis
+* what's missing from this model: spatial structure, density dependence
+
+
+## Example: Gopher Tortise
+
+Desert tortoise "medium-high" fertility matrix from Doak et al. 1994  Used for examples in Caswell 2002 book, Wisdom et al, and elsewhere.  Results reported in Table 6 of Doak et al. 1994.
+
+###  Data
+
+Data for testing / demonstrating functions.  Could add this to help files for the functionss.
+
+```{r}
+         
+tortoise <- matrix(data = c(0.000,0.000,0.000,0.000,0.000,1.300,1.980,2.57,
+0.716,0.567,0.000,0.000,0.000,0.000,0.000,0.00,
+0.000,0.149,0.567,0.000,0.000,0.000,0.000,0.00,
+0.000,0.000,0.149,0.604,0.000,0.000,0.000,0.00,
+0.000,0.000,0.000,0.235,0.560,0.000,0.000,0.00,
+0.000,0.000,0.000,0.000,0.225,0.678,0.000,0.00,
+0.000,0.000,0.000,0.000,0.000,0.249,0.851,0.00,
+0.000,0.000,0.000,0.000,0.000,0.000,0.016,0.86),
+byrow = T,nrow = 8)
+
+n <- c("yearling",  "juv1",  "juv2",  "imm1",  "imm2", "subadult", "adult1", "adult2")
+rownames(tortoise) <- n
+colnames(tortoise) <- n
+```
+
+
+Test calc_lam
+```{r}
+
+calc_lam(tortoise) #Matches "Average" - "All" result, Table 1, Doak et al 1994.
+```
+
+
+## Sensitivities
+
+```{r}
+
+max(calc_S(tortoise)$E) # matches sensitivity reported in Caswell 2002 pg 256
+
+
+```
+
+
+Note: elasticities sum to 1.
+```{r}
+sum(calc_S(tortoise)$E)
+```
+

@@ -2,16 +2,18 @@
 title: "b) Replication: Caswell & Trevisan periodic matrix models NOT UPDATED"
 output: rmarkdown::html_vignette
 vignette: >
+  %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{e) Replication: Caswell & Trevisan periodic matrix models NOT UPDATED}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE
+  eval = TRUE
 )
 ```
 
@@ -21,31 +23,31 @@ library(popcycles)
 
 ## Introduction
 
-Code to implement Caswell & Trevisan periodic matrix models.  Code is not yet updated; function calls need to be updated and checked (e.g., functions to calc sensitivity) 
+Code to implement Caswell & Trevisan periodic matrix models.  Code may yet fully updated; function calls are being to be updated and checked (e.g., functions to calc sensitivity) 
 
+Caswell and Trevisan 1994 Ecology Sensitivity analysis of periodic matrix models
+
+This paper develope the theory and mechanics for extending sensitivity analysis to periodic matrix models.
+
+## Notation: 
+
+* B(h) = individual matrix from the cycle
+* A(i) = all matrices multipled together
+* n(t+m) = [B(m)B(m-1)...B(1)]n(t)
+* ... ?  = =  A(1)n(t); subscript on A indicates the phase of cycle
+
+
+## Sensivitiy of periodic matrix product A
+
+>"to calc the sensitivity of lambda to change in each element of Bh, first cyclically permute the individual matrics until B()h appears first in the series (ie at the right hand end of the product matrics).   Scond calcualte the sensitivity matrix S(ha) corresponding to this product.  Third  premultiply it by the TRANSPOSE of the product of the indvidual matrices, EXCLUDING B(h)" Caswell and Treviasan 1994, pg xx (check this quote)
+
+
+
+### Example 1: Toy Example
+
+Two made up 2 x 2 matrices, Bs and Bw.
 
 ```{r}
-### Caswell and Trevisan 1994 Ecology Sensitivity analysis of periodic matrix models
-# toy example
-
-
-###Notation
-# B(h) = individual matrix from the cycle
-# A(i) = all matrices multipled together
-
-#n(t+m) = [B(m)B(m-1)...B(1)]n(t)
-#       =  A(1)n(t)                #subscript on A indicates the phase of cycle
-
-
-
-### Sensivitiy of A
-# "to calc the sensitivity of lambda to change in each element of Bh, 
-# 1st cyclically permute the individual marices until B()h appears 1st in teh series 
-# (ie et the right hand end of the product matrics).  
-# 2nd calcualte the sensitivity matrix S(ha) corresponding to this product 
-# 3rd  premultiply it by the TRANSPOSE of the product of the ind matrices, EXCLUDING B(h)"
-
-
 Bs <- matrix(data = c(2.0, 0.5,
                       0.5, 0.5),
              byrow = TRUE,
@@ -55,58 +57,87 @@ Bw <- matrix(data = c(0.2, 5.0,
                       0.5, 0.5),
              byrow = TRUE,
              nrow = 2)
+```
 
-
-
-#for Bs
+Periodic matrix product of Bw and Bs, As.
+```{r}
 As <- Bw%*%Bs
-Ssa <- calc.S.et.e(As)$S
+As
+```
+
+Lambda
+
+```{r}
+calc_lam(As)
+```
+
+Note that Bw * Bs and Bs * Bw result in different matrices, but the same lambda
+```{r}
+Bs%*%Bw
+```
+
+Check that lambda is the same
+
+
+```{r}
+calc_lam(Bs%*%Bw) == calc_lam(Bw%*%Bs)
+```
+
+Sensitivities of Bs
+
+```{r}
+Ssa <- calc_S(As)$S
 B.term <- t(Bw)
 
 B.term%*%Ssa
+```
 
-#         [,1]      [,2]
-# [1,] 0.455553 0.1691925
-# [2,] 4.185413 1.5544638
 
-#for Bw
+Sensitivities of Bw
+```{r}
 Aw <- Bs%*%Bw
-Swa <- calc.S.et.e(Ah)$S
+Swa <- calc_S(Aw)$S
 B.term <- t(Bs)
 
-B.term%*%Sha
-
-### Swb
-#      [,1]      [,2]
-# [1,] 1.698408 0.5328262
-# [2,] 1.312041 0.4116150
-
-
-
-### one liner
-Ss <- round(t(Bw)%*%calc.S.et.e(Bw%*%Bs)$S,2)
-
-
-Sw <- round(t(Bs)%*%calc.S.et.e(Bs%*%Bw)$S,2)
+B.term%*%Swa
 
 
 
 
-## McFadden 1991 Alcyonium data
-#A COMPARATIVE DEMOGRAPHIC ANALYSIS OF CLONAL REPRODUCTION IN A TEMPERATE SOFT CORAL
+```
 
-#Caswell looks at population T1
-#Data in McFadden table 2
 
-# for the "winter" period there are 2 matrices, which she average
-#"I first averaged those transition probabilities that were measured for the 
-#same period in different years at a site to determine a mean transition matrix 
-#for that period (e.g., for May-August at sites B1 and B2 and September-May at 
-#sites T1 and T2). I then computed the product of the transition matrices for the 
-#two dif-ferent periods at each site. For this calculation, 4- and 8-mo periods 
-#were treated as equal (e.g., 6-mo) lengths"
+One liners
 
-#Winter 1:September 1985-May 1986
+```{r}
+Ss <- round(t(Bw)%*%calc_S(Bw%*%Bs)$S, digits = 2)
+Sw <- round(t(Bs)%*%calc_S(Bs%*%Bw)$S, digits = 2)
+```
+
+
+## Real example: McFadden 1991 Alcyonium data
+
+McFadden 1991.  A COMPARATIVE DEMOGRAPHIC ANALYSIS OF CLONAL REPRODUCTION IN A TEMPERATE SOFT CORAL. Ecology.
+
+McFadden Table 1 report number of colonies dieing etc.
+```{r}
+63/177
+```
+
+
+
+
+Caswell looks at population T1
+Data in McFadden table 2
+
+For the "winter" period there are 2 matrices, which she averaged
+
+>"I first averaged those transition probabilities that were measured for thesame period in different years at a site to determine a mean transition matrix for that period (e.g., for May-August at sites B1 and B2 and September-May at sites T1 and T2). I then computed the product of the transition matrices for the two different periods at each site. For this calculation, 4- and 8-mo periods were treated as equal (e.g., 6-mo) lengths"
+
+Matrices
+
+```{r}
+# Winter 1:September 1985-May 1986
 Bw1 <- matrix(
 data = 
 c(0,      0,	  0,	  0,  	0,
@@ -116,7 +147,6 @@ c(0,      0,	  0,	  0,  	0,
   0,	   0.17,	0.09,	0.29,	0.76),
 byrow = TRUE,nrow =5
 )
-
 
 #Summer
 Bs <- matrix(
@@ -140,46 +170,47 @@ Bw2 <- matrix(
       0,	    0.09,	0.18,	0.52,	0.87),
 byrow = TRUE,nrow =5
 )
+```
 
-
-#average winter matrix
+Average winter matrix
+```{r}
 Bw <- (Bw1+Bw2)/2
 
+Bw
+```
 
-#multiple matrices
+Multiply matrices
+```{r}
 Aw <- Bs%*%Bw
+Aw
+```
+
+Sensitivites
+
+McFadden reports her S in Table 6.  Caswell reproduces (this is equation 10 in Caswell)
+```{r}
+round(calc_S(Aw)$E*100,0)
+```
+
+Elast by hand
+```{r}
+round((Aw/calc_lam(Aw))*calc_S(Aw)$S*100,0)
+```
+
+Sensitivities as per caswel and Trevisan 1994 Ecology
 
 
-
-#McFadden reports her S in Table 6
-#caswell reproduces
-round(calc.S.et.e(Aw)$e*100,0)
-
-#(this is equation 10 in Caswell)
-# [1,]    0    0    0    0    0
-# [2,]    0    2    5    3    1
-# [3,]    0    5   14   10    4
-# [4,]    0    3   10   11    8
-# [5,]    0    2    4    8    9
-
-#Elast by hand
-round((Aw/calc.lam(Aw))*calc.S.et.e(Aw)$S*100,0)
-
-
-
-
-#Sensitivities as per caswel and Trevisan 1994 Ecology
-
-#Winter 
+Winter
+```{r}
 Aw <- Bs%*%Bw            
-Sha <- calc.S.et.e(Aw)$S
+Sha <- calc_S(Aw)$S
 B.term <- t(Bs)
 Swa <-B.term%*%Sha
 
-Lw <- calc.lam(Aw)
+Lw <- calc_lam(Aw)
 
 #Calculate elasticity
-e.w <- round((Bw/Lw)*Swa*100,0)  #NOTE: the least is calcualted using the component matrix b, not final matrix A!!!
+e.w <- round((Bw/Lw)*Swa*100,0)  #NOTE: the last is calcualted using the component matrix b, not final matrix A!!!
 
 # e = matrix of interest / overall lambda * Special periodic sensitivity
 # where overall lambda is NOT lambda fo the matrix of interest but of all of them mult together
@@ -190,27 +221,35 @@ sum(round((Bw/Lw)*Swa*100,0) )
 1+3+3+3+14+7+15
 0+2+9+10+18
 
+```
 
 
-#Summer 
+Summer
+```{r}
 As <- Bw%*%Bs
-Sha <- calc.S.et.e(As)$S
+Sha <- calc_S(As)$S
 b.term <- t(Bw)
 Ssa <-b.term%*%Sha
 
-Ls <- calc.lam(As)
+Ls <- calc_lam(As)
 
 #Calculate elasticity
 e.s <- round((Bs/Ls)*Ssa*100,0)  #NOTE: the elast is calculated using the 
                                  #      component matrix b, 
                                  #      not final matrix A!!!
 
+
+```
+
+The elasticity
+```{r}
+e.s
+```
+
+```{r}
 #check: should sum to ~100
 sum(e.s,0)
 
 apply(e.s,2,sum)
-
-
-
 ```
 

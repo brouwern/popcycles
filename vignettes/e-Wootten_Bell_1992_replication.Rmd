@@ -14,183 +14,52 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(popcycles)
-```
-
-
 
 
 ## Introduction
 
-Code to implement Wooten and Bell 1992
+Code to implement the matrix population model of Wootton and Bell (1992).  This code attempts to reproduce their original results and figures using the methods described in the paper.  Hunter and Caswell (2005) describe an alternative way to approach the analysis but only carry out a portion of the analysis.
+
+### A note on terminology: metapopulation
+
+The original paper refers to the model as a metapopulation model, as do Hunter and Caswell (2005).  However, its generally considered best to reserve "metapopulation" for systems where extinction of subpopulations and recolonization vacated patches is common.  A more appropriate term might be "spatially structured matrix population model."
+
+
+Wooten and Bell 1992.  A METAPOPULATION MODEL OF THE PEREGRINE FALCON IN CALIFORNIA: VIABILITY AND MANAGEMENT STRATEGIES.  Ecological Applications 2: 307-321.
+
+### Key ecological details
+
+TODO: add important details
 
 ## Preliminaries
 
-
 ### Packages 
 
-The magic package makes working with these martices easier.
+General functions for demography are contained in the popcycles package.
+```{r}
+library(popcycles)
+```
+
+The magic package makes working with matrices easier.  
+TODO: check if I actually use this or if its just for Hunter and Caswell
 
 ```{r}
 #install.packages("magic")
-library(magic)
+# library(magic)
 ```
 
 
-### Functions
+## The Wootton and Bell model
 
+Wootton and Bell (1994) provide the paramters for their model in Table 1 (pg 312).
 
-TODO: make these into functions within the package
-
-
-#### Test data
-
-Data for testing functions
-
-
-Desert tortoise "medium-high" fertility matrix from Doak et al. 1994  Used for examples in Caswell 2002 book, Wisdom et al, and elsewhere.  Results reported in Table 6 of Doak et al. 1994.
-
-```{r}
-         
-tortoise <- matrix(data = c(0.000,0.000,0.000,0.000,0.000,1.300,1.980,2.57,
-0.716,0.567,0.000,0.000,0.000,0.000,0.000,0.00,
-0.000,0.149,0.567,0.000,0.000,0.000,0.000,0.00,
-0.000,0.000,0.149,0.604,0.000,0.000,0.000,0.00,
-0.000,0.000,0.000,0.235,0.560,0.000,0.000,0.00,
-0.000,0.000,0.000,0.000,0.225,0.678,0.000,0.00,
-0.000,0.000,0.000,0.000,0.000,0.249,0.851,0.00,
-0.000,0.000,0.000,0.000,0.000,0.000,0.016,0.86),
-byrow = T,nrow = 8)
-
-n <- c("yearling",  "juv1",  "juv2",  "imm1",  "imm2", "subadult", "adult1", "adult2")
-rownames(tortoise) <- n
-colnames(tortoise) <- n
-```
-
-
-
-#### calc_lambda()
-
-A function to take a matrix M and return the population growth rate lambda.  
-
-
-```{r}
-## function to calculate lambda
-
-### main function
-calc_lam <- function(M){
-  eigs.A <- eigen(M)
-  dom.pos <- which.max(eigs.A[["values"]])
-  #lambda
-  L1 <- Re(eigs.A[["values"]][dom.pos])
-  
-  return(L1)
-}
-
-### suppress extraneous warnings
-# TODO: doesn't seem to work
-calc_lam <- suppressWarnings(calc_lam)
-
-
-
-
-
-```
-
-
-Test
-```{r}
-M.test <- matrix(data = c(0.00,2.0,
-                          0.25,0.9),
-                 nrow = 2, byrow = T)
-
-calc_lam(M.test)
-
-calc_lam(tortoise) #Matches "Average" - "All" result, Table 1, Doak et al 1994.
-```
-
-#### calc_S()
-
-A function to calculate sensitivities and elasticities.
-
-TODO: make into function for package
-TODO: revise or make other functions to yield key things like stable stage dist, reproductive value etc.
-
-```{r}
-#### function to calc sensitivities
-calc_S <- function(M){
-  
-  # prepliminaries
-  ## Calculate lambda 
-  ## (needed for elasticities)
-  eigs.A <- eigen(M)
-  dom.pos <- which.max(eigs.A[["values"]])
-  
-  #lambda
-  L1 <- Re(eigs.A[["values"]][dom.pos])
-  
-  
-  #stable stage distribution
-  ## TODO: Make sep. function
-  w <- Re(eigs.A[["vectors"]][ , dom.pos])
-  
-  
-  #rep value RV
-  ## TODO: Make sep. function
-  m <- eigen(t(M))
-  v <- Re(m$vectors[ , which.max(Re(m$values))])
-  
-  RV <- v/v[1]
-  
-  #### Sensitivities
-  
-  # The numerator
-  vw.s <- v%*%t(w)
-  
-  S <- vw.s/as.numeric(v%*%w)
-  
-  #### Elasticities
-  ## E = 
-  E <- (M/L1)*S  #m1 is matrix, L1 is lambda, S is sensitivity matrix
-  
-  out <- list(S = S,
-              E = E)
-  return(out)
-}
-
-### suppress extraneous warnings
-calc_S <- suppressWarnings(calc_S)
-
-```
-
-
-Test
-
-```{r}
-M.test <- matrix(data = c(0.00,2.0,
-                          0.25,0.9),
-                 nrow = 2, byrow = T)
-
-calc_S(M.test)
-
-max(calc_S(tortoise)$E) # matches sensitivity reported in Caswell 2002 pg 256
-
-
-```
-
-
-Note: elasticities sum to 1.
-```{r}
-sum(calc_S(tortoise)$E)
-```
-
-
-## Wooten and Bell model
-
-Table 1 pg 312, Wootten and Bell 1992.
+TODO: build the table and render in markdown e.g. using pander()
 
 ### Parameters
+
+#### Source of parameters
+
+TODO: brief description of how parameters obtained.
 
 #### "Basic (unstructured) model"
 
@@ -207,6 +76,7 @@ r*y # = 0.2592
 
 # Introduction parameters
 ## Note: Authors use I, which is an R function
+## I add 0 or 50 to the object name.
 I0  <- 0
 I50 <- 50
 ```
@@ -252,16 +122,11 @@ f1.0 <- 1.0
 
 
 
-
-TODO: How introductions are handled could be modified using a periodic matrix model approach
-rather than this (the usual) of adding a vector of introduction
-
-
 ### Mean Matrix 
 
 A mean matrix averaging the Northern and Southern subpopulations.
 
-Equation 1, pg 309, Wootten and Bell 1992
+Equation 1, pg 309, Wootton and Bell 1992
 
 The general form of the matrix is 
 
@@ -271,16 +136,17 @@ TODO: put this in latex
 r s
 
 ```{r}
-
-# matrix
+# mean matrix
 Mbar <- matrix(data = c(0, y*b,
-                     r, s),
-            byrow = T, nrow = 2)
+                        r, s),
+            byrow = T, 
+            nrow = 2)
 
 # round y*b to look for rounding errors
 Mbar.round <- matrix(data = c(0, round(y*b,2),
-                     r, s),
-            byrow = T, nrow = 2)
+                              r, s),
+            byrow = T, 
+            nrow = 2)
 
 # vector to represent introductions
 Ix50 <- c(y*I50, 0)
@@ -291,10 +157,19 @@ Ix50 <- c(y*I50, 0)
 Equation 3 pg 310.
 They use h, which is 1 -m
 
-c = probability of surviving migration; assumed to b 1
+c = probability of surviving migration; assumed to be 1
 
-A compact description from a follow-up paper is available here:
+A compact description of the model is available in a follow-up paper by the author's:
 file:///Users/nlb24/Downloads/appendixA.htm
+
+
+NOTE: in some versions of the model there is no dispersal between the northern and southern subpopulations.  This results in a **reducible model**, which is not good mathematically, though ecologically realistic.  I believe lambda for this matrix is equal to the average of lambda of the two submatrices, but I need to check.  Reducible models may also be non-ergodic.  Function is_irreducible() checks for irreproducibility, while is_ergodic checks for non-ergodicity.  Both functions were written by Iain Stott.
+
+Stott et al. (2010) explain the important of reproduciblity and ergodicity:
+
+>"To be useful for predictive or prospective analyses, PPM models should generally be irreducible (the associated life cycle graph contains the necessary transition rates to facilitate pathways from all stages to all other stages) and therefore ergodic (whatever initial stage structure is used in the population projection, it will always exhibit the same stable asymptotic growth rate)"  Stott et al.  https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/j.2041-210X.2010.00032.x
+
+TODO: additional functions in Stott et al may be useful.  Also add their test matrices to test/demo the functions
 
 ```{r}
 c<- 1
@@ -317,7 +192,7 @@ Mmeta <- matrix( data = c(0.00,       y.n*b.n, 0.00,      0.00,
 Nbar.init <- c(F.n+F.s, N.n+N.s)
 sum(Nbar.init)
 
-# Full Initila pop vector for meta model
+# Full Initial pop vector for meta model
 Nmeta.init <- c(F.n, N.n, F.s, N.s)
 sum(Nmeta.init)
 
@@ -335,8 +210,14 @@ pop.historyMbar <- data.frame(year = 1:length(x),
 pop.historyMbar[1,2:3] <- Nbar.init
 
 Nbar.i <- Nbar.init
+
+# Project using for() loop
 for(i in 2:nrow((pop.historyMbar)) ){
+  
+  # nultiple mean matrix Mbar by current popualtion vector Nbar.i
   Nbar.i <- Mbar%*%Nbar.i
+  
+  # Store current popualtion vector Nbar.i 
   pop.historyMbar[i, 2:3] <- Nbar.i
 }
 
@@ -357,6 +238,8 @@ pop.historyMmeta <- data.frame(year = 1:length(x),
 pop.historyMmeta[1,2:5] <- Nmeta.init
 
 Nmeta.i <- Nmeta.init
+
+# project using for loop
 for(i in 2:nrow((pop.historyMmeta)) ){
   Nmeta.i <- Mmeta%*%Nmeta.i
   pop.historyMmeta[i, 2:5] <- Nmeta.i
@@ -372,6 +255,8 @@ tail(pop.historyMmeta)
 
 ### Mean matrix, with introduction
 
+TODO: could create a function that takes the arguments of a matrix, starting population vector, and reintroduction amount (0, >0) and runs the projects.  Not necessary but might simplify code further down in the model
+
 ```{r}
 x <- rep(NA, 125)
 pop.histMbar2 <- data.frame(year = 1:length(x),
@@ -384,8 +269,14 @@ I.vector <- c(y*I50/2,0)
 
 Nbar.i <- Nbar.init
 for(i in 2:nrow((pop.histMbar2)) ){
+  
+  # Project population
   Nbar.i <- Mbar%*%Nbar.i 
+  
+  # Add introduced birds
   Nbar.i <- Nbar.i  + I.vector
+  
+  # Store current population state
   pop.histMbar2[i, 2:3] <- Nbar.i
 }
 
@@ -397,8 +288,9 @@ for(i in 2:nrow((pop.histMbar2)) ){
 
 ### Metapop - with re-introduction
 
-25:25 allocation of offspring
+25:25 allocation of offspring to North vs. South subpopulation.
 f = 0.5
+
 ```{r}
 x <- rep(NA, 125)
 pop.historyMmeta_25.25 <- data.frame(year = 1:length(x),
@@ -410,17 +302,23 @@ pop.historyMmeta_25.25 <- data.frame(year = 1:length(x),
 pop.historyMmeta_25.25[1,2:5] <- Nmeta.init
 
 #introduction vector
-I.vector_25.25 <- c(f0.5*y*I50/2, 0, (1-f0.5)*y*I50/2, 0)
+I.vector_25.25 <- c(f0.5*y*I50/2, 
+                    0, 
+                    (1-f0.5)*y*I50/2, 
+                    0)
 
 
 Nmeta.i <- Nmeta.init
 for(i in 2:nrow((pop.historyMmeta_25.25)) ){
+  
   Nmeta.i <- Mmeta%*%Nmeta.i + I.vector_25.25
   
   pop.historyMmeta_25.25[i, 2:5] <- Nmeta.i
 }
 
-pop.historyMmeta_25.25$Ntot <- apply(pop.historyMmeta_25.25[,c(3,5)],MARGIN = 1,sum)
+pop.historyMmeta_25.25$Ntot <- apply(pop.historyMmeta_25.25[,c(3,5)],
+                                     MARGIN = 1,
+                                     sum)
 
 
 ```
@@ -446,7 +344,8 @@ Figure 5 indicates ~89 (panel B+C), matching my calcs
 ```{r}
 plot(Nx ~ year, pop.historyMbar, pch = 7,
      ylim = c(0, 150),
-     xlim = c(1,100))
+     xlim = c(1,100),
+     main = "Figure 3")
 points(Nx ~ year, pop.histMbar2,   pch = 9)
 points(Ntot ~ year, pop.historyMmeta, pch = 15, col = 2)
 points(Ntot ~year, pop.historyMmeta_25.25, pch = 18, col = 2, cex =1.5)
@@ -525,14 +424,15 @@ head(pop.historyMmeta_0.50)
 
 ### Plot results - Figure 4
 
-This qualitatively matches Figure 4 of Wootton and Bell 1992, except for variation likely do to ambiguity about what initial population sizes were
+This qualitatively matches Figure 4 of Wootton and Bell 1992, except for variation likely due to ambiguity about what initial population sizes were
 
-THey appear to plot year 5 as the starting point, perhpas to get rid of initial transient dynamics
+They appear to plot year 5 as the starting point, perhpas to get rid of initial transient dynamics.
 ```{r}
 plot(Ntot ~ year, pop.historyMmeta_25.25,
      ylim = c(85, 105),
      xlim = c(2,100),
-     pch = 7)
+     pch = 7,
+     main = "Figure 4")
 points(Ntot ~year,
        pop.historyMmeta_50.0, pch = 18, col = 2, cex = 1.3)
 points(Ntot ~year,
@@ -556,7 +456,7 @@ Different between my results may be due to rounding error, analytically routine 
 
 ```{r}
 eigen(Mbar)         # 0.956903
-eigen(Mbar.round) # 0.9579092
+eigen(Mbar.round)   # 0.9579092
 
 calc_lam(Mbar)
 ```
@@ -609,12 +509,6 @@ sum(c(0.11,0.06,0.11,0.06,0.11,0.57,0.42,-0.04))
 
 
 
-
-
-
-
-
-
 ## Metapop model with updated adult survival
 
 They assessed their model against observed population counts from the previous decade and concluded their estimate of adult survival was inappropriate for the North population.  They updated it to 0.91 based on various calculations I haven't yet reproduced because I don't have the original abundance data they used (could be extracted from figures)
@@ -636,7 +530,7 @@ Mmeta.Sn.91 <- matrix( data = c(0.00,       y.n*b.n, 0.00,      0.00,
 
 ## Build their ceiling model
 
-They implement their ceiling model by swapping in an entirely different matrix when they hit the carrying capacity for the north (I havne't identified yet if they say what they do for the south - maybe they just stop the simulation / cap things)
+They implement their ceiling model by swapping in an entirely different matrix when they hit the carrying capacity for the north (I haven't identified yet if they say what they do for the south - maybe they just stop the simulation / cap things)
 
 See equation 5 (?)
 
@@ -645,7 +539,7 @@ Note:
 * r.n*(1-m) term for recruitment in north (cell 2,1) gets hard coded to 0
 
 
-The main ceiling model is structure like this
+The main ceiling model is structure like this:
 ```{r}
 d.n <- s.n
 Mmeta.ceiling <- matrix( data = c(d.n*(1-m), y.n*b.n, d.n*m*c,   0.00,
@@ -658,19 +552,18 @@ Mmeta.ceiling <- matrix( data = c(d.n*(1-m), y.n*b.n, d.n*m*c,   0.00,
 
 
 
-
 New vector defined for recruitment
 
 (1-s.n) is the number of territory individuals that die
 (1-s.n)*Tn is the number territories that open up due to death
 
 As part of the recruitment vector
-(1-s.n)*Tn is the number of "floaters"/first years add to the territory holder population
+(1-s.n)*Tn is the number of "floaters"/first years added to the territory holder population.
 
--1*(1-s.n)*Tn is the number of "floaters"/first years pull out from that class and upgraded
+-1*(1-s.n)*Tn is the number of "floaters"/first years pulled out from that class and upgraded.
 
 
-Not this doens't include any introductions - assumes introduces cease when population reaches carrying capacity?
+Not this doesn't include any introductions - assumes introduces cease when population reaches carrying capacity?
 ```{r}
 T.n <- 100
 T.s <- 120
@@ -681,7 +574,8 @@ I.ceiling <- c(-1*(1 - s.n)*T.n, (1-s.n)*T.n, 0, 0)
 
 ### Run ceiling model
 
-As function to help debugging
+As simple function to help debugging.  
+TODO: as noted above, we could write a general function that carries out the anlysis entirely 
 ```{r}
 ceiling_function <- function(){
   x <- rep(NA, 200)
@@ -736,11 +630,12 @@ for(i in 2:nrow((pop.historyMmeta_ceiling)) ){
 
 
 Results qualitatively similar.  Their model doesn't appear to set a hard boundary at 100 breeding birds in the North.
+
 If I put one in, it creates output with very different equilibrium density for southern pop than what hey show or what I get without the hard cap.
 
-Their plot shows different initial population sizes, and trmming off the bit of transience at the beginning doesn't totally bring it in line.
+Their plot shows different initial population sizes, and trimming off the bit of transience at the beginning doesn't totally bring it in line.
 
-In their model thr southern population also reaches the same stable population level (~90) before and after the population crash at t = 100
+In their model the southern population also reaches the same stable population level (~90) before and after the population crash at t = 100
 
 ```{r}
 # x <- rep(NA, 200)
@@ -869,7 +764,7 @@ Do they have mig-vs no mig labels backwards?
 w/o migration population should grow FASTER
 This is what mine shows, 
 
-They apporach asymptote for southern population more smoothly
+They approach asymptote for southern population more smoothly
 
 ```{r}
 ## 7 A
@@ -926,7 +821,8 @@ plot(Nn ~ year, data = pop.historyMmeta_ceiling[1:99,], pch = 7,
      ylab = "Number of femalse",
      main = "Figure 8A",
      xaxs="i",
-     yaxs="i")
+     yaxs="i",
+     main = "Figure 8")
 abline(h = 100, col = 2)
 points(Nnorth ~ year, data = pop.historyMmeta_ceiling[1:99,], type = "l")
 ```
@@ -950,20 +846,11 @@ points(Nsouth ~ year, data = pop.historyMmeta_ceiling[1:99,], type = "l")
 
 ## Figure 8c
 
-"Simulations of the population without floaters (i.e.,
-assuming that birds that did not recruit to the population
-at age 2 died) suggested that the migration of
-nonterritorial birds (> 1 year old) from the source to
-the sink population strongly affected the abundance of
-territorial birds in the sink (Fig. 8C). Including floaters
-in the model elevated the expected number of breeding
-birds in the south from :>::39 to 94 pairs." (pg 318)
+"Simulations of the population without floaters (i.e., assuming that birds that did not recruit to the population at age 2 died) suggested that the migration of nonterritorial birds (> 1 year old) from the source to the sink population strongly affected the abundance of territorial birds in the sink (Fig. 8C). Including floatersin the model elevated the expected number of breeding
+birds in the south from 39 to 94 pairs." (pg 318)
 
 From caption:
-"The effect on sink population sizes of non breeding birds older than
-1 yr of age."
-
-
+"The effect on sink population sizes of non breeding birds older than 1 yr of age."
 
 Ceiling model with no floaters
 ```{r}
