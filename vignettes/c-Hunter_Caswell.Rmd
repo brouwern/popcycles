@@ -214,7 +214,7 @@ I forget if the matrix of results is organized by row or column
 
 
 TODO:
-I have a function called calc.lam() that returns just the biologically important information, need to find where I put it / re-make it
+I have a function called calc_lam() that returns just the biologically important information, need to find where I put it / re-make it
 
 
 ## Eigen analysis of fulle system

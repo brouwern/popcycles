@@ -3,8 +3,10 @@ title: "l) Notes on Schipper and Kauffman et al 2013"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{l) Notes on Schipper and Kauffman et al 2013}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -19,14 +21,13 @@ library(popcycles)
 ```
 
 
+This sets up basic aspects for a more recent model of Peregrine falcons: 
 
-Note yet updated / checked
+Schipper, Kauffman et al 2013.  Modelling interactions of toxicants and density dependence in wildlife populations.  Journal of Applied Ecology 50: 1469-1478.
 
-
+The code currently isn't well annotated and doesn't do much.
 
 ```{r,eval = F}
-#Modelling interactions of toxicants and density dependence in wildlife populations
-#Schipper, Kauffman et al Journal of Applied Ecology 2013, 50, 1469-1478
 
 S.jw <- 0.38
 S.jc <- 0.24
@@ -56,13 +57,16 @@ fx.make.per.mat <- function(S.jw,S.jc,
                0.00, 0.00, S.nb*P.b.t,      S.b)
   
   
-  per.mat <- matrix(per.mat,nrow = 4, byrow = T)
+  per.mat <- matrix(per.mat,
+                    nrow = 4, 
+                    byrow = T)
   
   return(per.mat)
 }
 
 N.per <- c(10,10,10,10)
 names(N.per) <- c("jw","jc","nb","b")
+
 fx.P.b.t <- function(x0, x1, N.per){
   exp(x0 + x1*N.per["b"])/(1 + exp(x0 + x1*N.per["b"]))
 }
@@ -70,7 +74,7 @@ fx.P.b.t <- function(x0, x1, N.per){
 N.per <- 1:100
 names(N.per) <- "b"
 
-plot(fx.P.b.t(x0,x1,N.per)
+plot(fx.P.b.t(x0,x1,N.per))
 
 N.per.vec <- 1:500
 plot(exp(x0 + x1*N.per.vec)/(1 + exp(x0 + x1*N.per.vec)) ~ N.per.vec)

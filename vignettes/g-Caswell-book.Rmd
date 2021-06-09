@@ -3,8 +3,10 @@ title: "d) Notes from Caswell's book chapter on periodic models"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{d) Notes from Caswell's book chapter on periodic models}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -22,18 +24,14 @@ library(popcycles)
 
 Not yet updated.  Probably doesn't make much sense without the text from the books.
 
+Examples from Caswell Chapter 13 Periodic Matrix Models
+Section 13.2.1 Period matrix models for annuals
+Example 13.4 A model for winter annual plants
+
+From Watkinson 1981
 
 
 ```{r}
-
-
-
-#Caswell chapter 13 Periodic Matrix Models
-#13.2.1 Period matrix models for annuals
-#Example 13.4 A model for winter annual plants
-#From Watkinson 1981
-
-
 #### Subcomponent matrices
 b11 <- 0.3
 b21 <- 0.1
